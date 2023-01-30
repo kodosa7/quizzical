@@ -5,10 +5,10 @@ import './App.css'
 
 export default function App() {
     const [questions, setQuestions] = React.useState([])
+    const [hasClicked, setHasClicked] = React.useState(false)
 
     // get 5 random questions from an API
     React.useEffect(() => {
-        console.log("useEffect ran")
         fetch('https://opentdb.com/api.php?amount=5')
             .then(res => res.json())
             .then(data => setQuestions(data.results))
@@ -30,6 +30,7 @@ export default function App() {
                             question={question.question}
                             correct={question.correct_answer}
                             incorrect={question.incorrect_answers}
+                            hasClicked={hasClicked}
                         />
                     </div>  
                 ))}
