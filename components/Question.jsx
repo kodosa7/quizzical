@@ -30,18 +30,29 @@ export default function Question(props) {
 
 
     function checkButton(e) {
-        props.setHasClicked(true)
         let answer = e.target.innerHTML
         setIsPressed({
             [answer]: true
         })
+        console.log(props.id)
+
+        props.setClickedAll(prevClickedAll => {
+            const updatedClickedAll = { ...prevClickedAll[0] }
+            updatedClickedAll[props.id] = true
+            // console.log("updatedClickedAll", updatedClickedAll)
+            const allBtnsClicked = Object.values(updatedClickedAll).every(value => value === true)
+            // console.log("allClicked", allBtnsClicked)
+            return [updatedClickedAll, allBtnsClicked]
+        })
+
         console.log("clicked answer:", answer)
         console.log("correct answer:", props.correct)
-        console.log("hasClicked", props.hasClicked)
+        
         if (props.correct === answer) {
             console.log("*** CORRECT ANSWER!")
+            props.setIsAllAnswersRight(prevState => prevState + 1)
         } else {
-            console.log("!!! WRONG ANSWER")
+            console.log("*** INCORRECT ANSWER :-(")
         }
         // setIsShuffled(false)  // set shuffled to false when button is clicked
     }
