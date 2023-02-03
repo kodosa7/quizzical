@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 
 export default function Question(props) {
     // const [isShuffled, setIsShuffled] = useState(true)  // added state to keep track of shuffling
-    const [isPressed, setIsPressed] = useState({})  // added state
+    const [isPressed, setIsPressed] = useState({})
 
     useEffect(() => {
         setIsPressed({
