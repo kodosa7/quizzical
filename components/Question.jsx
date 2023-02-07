@@ -1,34 +1,29 @@
 import React, { useEffect, useState } from "react"
 
 export default function Question(props) {
-    // const [isShuffled, setIsShuffled] = useState(true)  // added state to keep track of shuffling
     const [isPressed, setIsPressed] = useState({})
+    
     useEffect(() => {
         setIsPressed({
-            [props.correct]: true
-            
+            [props.correct]: false
         })
     }, [])
 
-
-    function unshuffledAnswersObject() {
+    // make an object with answers and shuffle its order randomly
+    function shuffledAnswersObject() {
         const allAnswersObject = {}
         allAnswersObject[props.correct] = true
         props.incorrect.map(item => 
             allAnswersObject[item] = false
         )
-        return allAnswersObject
+        // console.log("allAnswersObject", allAnswersObject)
+        const obj = allAnswersObject
+        const sortedObj = Object.fromEntries(
+            Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]))
+          )
+        // console.log("new method sortedObj", sortedObj)
+        return sortedObj
     }
-
-    // *** commented code is for shuffling the resulted array
-    const shuffledAnswersObject = unshuffledAnswersObject()
-    // let entries = Object.entries(unshuffledAnswersObject())
-    // if (isShuffled) {
-        // entries = entries.sort(() => Math.random() - 0.5)  // shuffle entries randomly
-    // }
-    // const shuffledAnswersObject = Object.fromEntries(entries)
-    // console.log("shuffledAnswersObject", shuffledAnswersObject)
-
 
     function checkButton(e) {
         let answer = e.target.innerHTML
@@ -41,9 +36,7 @@ export default function Question(props) {
         props.setClickedAll(prevClickedAll => {
             const updatedClickedAll = { ...prevClickedAll[0] }
             updatedClickedAll[props.id] = true
-            // console.log("updatedClickedAll", updatedClickedAll)
             const allBtnsClicked = Object.values(updatedClickedAll).every(value => value === true)
-            // console.log("allClicked", allBtnsClicked)
             return [updatedClickedAll, allBtnsClicked]
         })
 
@@ -56,7 +49,6 @@ export default function Question(props) {
         } else {
             console.log("*** INCORRECT ANSWER :-(")
         }
-        // setIsShuffled(false)  // set shuffled to false when button is clicked
     }
 
     return (
@@ -64,7 +56,7 @@ export default function Question(props) {
             <div className="questions">
                 <h3 dangerouslySetInnerHTML={{ __html: props.question }}></h3>
                 <div>
-                    {Object.entries(shuffledAnswersObject).map((item, index) =>
+                    {Object.entries(shuffledAnswersObject()).map((item, index) =>
                     !props.hasRendered ?
                         <>
                         <button
@@ -74,7 +66,7 @@ export default function Question(props) {
                             >{item[0]}
                         </button>
                         </>
-                        :
+                    :
                         <>
                         <button
                             className={`answer-btn ${props.correct ? "result--correct" : "result--incorrect"}`}

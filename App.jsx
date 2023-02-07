@@ -33,8 +33,8 @@ export default function App() {
             })
         }, [])
     
-    console.log("hasCheckBtnClicked", hasCheckBtnClicked)
-    console.log("isBegin", isBegin)
+    // console.log("hasCheckBtnClicked", hasCheckBtnClicked)
+    // console.log("isBegin", isBegin)
 
     // when the Check button is pressed, call this function
     function checkAllAnswers() {
