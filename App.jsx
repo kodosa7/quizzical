@@ -8,9 +8,9 @@ export default function App() {
     const [questions, setQuestions] = useState([])
     const [isAllAnswersRight, setIsAllAnswersRight] = useState(0)
     const [hasCheckBtnClicked, setHasCheckBtnClicked] = useState(false)
-    const [isBegin, setIsBegin] = useState(false)
+    const [isBegin, setIsBegin] = useState(true)
     const [isQuizStarted, setIsQuizStarted] = useState(false)
-    const [showCheckAnswers, setShowCheckAnswers] = useState(false)
+    const [hasRendered, setHasRendered] = useState(false)
     const [clickedAll, setClickedAll] = useState([
         {
             "1": false,
@@ -28,14 +28,15 @@ export default function App() {
             .then(data => {
                 setQuestions(data.results)
                 setIsBegin(true)
-                setShowCheckAnswers(true)
+                setHasCheckBtnClicked(false)
+                setHasRendered(false)
             })
         }, [])
     
     console.log("hasCheckBtnClicked", hasCheckBtnClicked)
     console.log("isBegin", isBegin)
 
-    // then the Check button is pressed, call this function
+    // when the Check button is pressed, call this function
     function checkAllAnswers() {
         console.log("here", hasCheckBtnClicked)
 
@@ -58,7 +59,7 @@ export default function App() {
     // check if buttons of all answers have been clicked
     const haveAllBtnsClicked = Object.values(clickedAll[0]).every((value, i, array) => array[i] === true)
 
-    // then Play again button is pressed, reset states and re-fetch data
+    // when Play again button is pressed, reset states and re-fetch data
     function playAgain() {
         console.log("play again function triggered")
         fetch('https://opentdb.com/api.php?amount=5')
@@ -68,7 +69,6 @@ export default function App() {
                 setIsBegin(true)
                 setHasCheckBtnClicked(false)
                 setIsAllAnswersRight(0)
-                setShowCheckAnswers(true)
                 setClickedAll([
                   {
                     "1": false,
@@ -81,7 +81,7 @@ export default function App() {
             })
     }
 
-    // render this to DOM
+    // render things to DOM (using conditional rendering)
     return (
         <div className="App">
             <div className="container">
@@ -100,6 +100,8 @@ export default function App() {
                                 setClickedAll={setClickedAll}
                                 isAllAnswersRight={isAllAnswersRight}
                                 setIsAllAnswersRight={setIsAllAnswersRight}
+                                hasRendered={hasRendered}
+                                setHasRendered={setHasRendered}
                             />
                         </div>  
                     ))
@@ -130,7 +132,7 @@ export default function App() {
                                 </>
                                 ) // /condition 4 end
                             :
-                            (  <button
+                            (   <button
                                     onClick={checkAllAnswers}
                                     className={"check-btn"}
                                 >Check answers

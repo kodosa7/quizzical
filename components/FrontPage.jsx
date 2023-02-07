@@ -10,16 +10,5 @@ export default function FrontPage({ startQuiz }) {
         </div>
     )
 }
-
-
-// {showCheckAnswers ? (
-//     <button onClick={checkAllAnswers} className="check-answers-btn">
-//       Check Answers
-//     </button>
-//   ) : null}
-//  You can toggle the state value of showCheckAnswers whenever you want to show or hide the button.
- 
- 
- 
  
  
