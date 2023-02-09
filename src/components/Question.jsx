@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from "react"
 
 export default function Question(props) {
-    // const [isShuffled, setIsShuffled] = useState(true)  // added state to keep track of shuffling
-    const [isPressed, setIsPressed] = useState({})  // added state
-
+    const [isPressed, setIsPressed] = useState({})
+    
     useEffect(() => {
         setIsPressed({
-            [props.correct]: true
+            [props.correct]: false
         })
     }, [])
 
-    function unshuffledAnswersObject() {
+    // make an object with answers and shuffle its order randomly
+    function shuffledAnswersObject() {
         const allAnswersObject = {}
         allAnswersObject[props.correct] = true
         props.incorrect.map(item => 
             allAnswersObject[item] = false
         )
-        return allAnswersObject
+        const obj = allAnswersObject
+        const sortedObj = Object.fromEntries(
+            Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]))
+          )
+        return sortedObj
     }
 
-    // *** commented code is for shuffling the resulted array
-    const shuffledAnswersObject = unshuffledAnswersObject()
-    // let entries = Object.entries(unshuffledAnswersObject())
-    // if (isShuffled) {
-        // entries = entries.sort(() => Math.random() - 0.5)  // shuffle entries randomly
-    // }
-    // const shuffledAnswersObject = Object.fromEntries(entries)
-    // console.log("shuffledAnswersObject", shuffledAnswersObject)
-
-
+    // checks every single answer button
     function checkButton(e) {
         let answer = e.target.innerHTML
+
         setIsPressed({
             [answer]: true
         })
@@ -39,36 +35,59 @@ export default function Question(props) {
         props.setClickedAll(prevClickedAll => {
             const updatedClickedAll = { ...prevClickedAll[0] }
             updatedClickedAll[props.id] = true
-            // console.log("updatedClickedAll", updatedClickedAll)
             const allBtnsClicked = Object.values(updatedClickedAll).every(value => value === true)
-            // console.log("allClicked", allBtnsClicked)
             return [updatedClickedAll, allBtnsClicked]
         })
 
         console.log("clicked answer:", answer)
         console.log("correct answer:", props.correct)
-        console.log("clickedAll", props.clickedAll)
         
         if (props.correct === answer) {
             console.log("*** CORRECT ANSWER!")
+            props.setIsAllAnswersRight(prevState => prevState + 1)
         } else {
-            console.log("!!! WRONG ANSWER")
+            console.log("*** INCORRECT ANSWER :-(")
         }
-        // setIsShuffled(false)  // set shuffled to false when button is clicked
     }
-
 
     return (
         <div className="questions-container">
             <div className="questions">
                 <h3 dangerouslySetInnerHTML={{ __html: props.question }}></h3>
-                {Object.entries(shuffledAnswersObject).map((item, index) => 
-                    <button
-                        onClick={checkButton}
-                        className={`answer-btn ${isPressed[item[0]] ? "pressed" : ""}`}  // added class to change color
-                        key={index}
-                        dangerouslySetInnerHTML={{ __html: item[0]}}
-                    ></button>)}
+                <div>
+                    {Object.entries(shuffledAnswersObject()).map((item, index) =>
+                        
+                        {
+                            return (
+                                !props.hasFinalColors ?
+                                    (
+                                    <button
+                                        className={`answer-btn ${isPressed[item[0]] ? "pressed" : ""}`}
+                                        onClick={checkButton}
+                                        key={index}
+                                        >{item[0]}
+                                    </button>
+                                    )
+                                :
+                                    isPressed[item[0]] ?
+                                        (
+                                        <button
+                                            className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--correct" : ""}`}
+                                            key={index}
+                                            >{item[0]}
+                                        </button>
+                                        )
+                                    :
+                                        (
+                                        <button
+                                            className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--clicked-incorrect" : ""}`}
+                                            key={index}
+                                            >{item[0]}
+                                        </button>
+                                        )
+                                    )}
+                    )}
+                </div>
                 <div className="line"></div>
             </div>
         </div>
