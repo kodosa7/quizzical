@@ -1,5 +1,5 @@
 # Quizzical
-## A quiz app that's fetching questions and answers from an API server
+- A quiz app that's fetching questions and answers from an API server
 
 ## How to use it
 - launch the app and click the Start button
