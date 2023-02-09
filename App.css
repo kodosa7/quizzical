@@ -93,6 +93,10 @@ body {
   text-align: left;
 }
 
+.button-row {
+  text-align: left;
+}
+
 .answer-btn {
   padding: .188rem .625rem;
   background: #F5F7FB;
@@ -105,7 +109,7 @@ body {
   line-height: .75rem;
   text-align: center;
   color: #293264;
-  margin: 0 .4rem;
+  margin: .4rem .8rem .4rem 0;
   cursor: pointer;
 }
 
