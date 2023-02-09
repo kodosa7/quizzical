@@ -114,12 +114,14 @@ body {
   color: #293264;
   background: #94D7A2;
   border: 1px solid #94D7A2;
+  cursor: not-allowed;
 }
 
-.answer-btn.result--incorrect {
+.answer-btn.result--clicked-incorrect {
   color: #293264;
   background: #F8BCBC;
   border: 1px solid #F8BCBC;
+  cursor: not-allowed;
 }
 
 .check-btn, .play-again-btn {

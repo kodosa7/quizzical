@@ -16,15 +16,14 @@ export default function Question(props) {
         props.incorrect.map(item => 
             allAnswersObject[item] = false
         )
-        // console.log("allAnswersObject", allAnswersObject)
         const obj = allAnswersObject
         const sortedObj = Object.fromEntries(
             Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]))
           )
-        // console.log("new method sortedObj", sortedObj)
         return sortedObj
     }
 
+    // checks every single answer button
     function checkButton(e) {
         let answer = e.target.innerHTML
 
@@ -57,24 +56,36 @@ export default function Question(props) {
                 <h3 dangerouslySetInnerHTML={{ __html: props.question }}></h3>
                 <div>
                     {Object.entries(shuffledAnswersObject()).map((item, index) =>
-                    !props.hasRendered ?
-                        <>
-                        <button
-                            className={`answer-btn ${isPressed[item[0]] ? "pressed" : ""}`}
-                            onClick={checkButton}
-                            key={index}
-                            >{item[0]}
-                        </button>
-                        </>
-                    :
-                        <>
-                        <button
-                            className={`answer-btn ${props.correct ? "result--correct" : "result--incorrect"}`}
-                            onClick={checkButton}
-                            key={index}
-                            >{item[0]}
-                        </button>
-                        </>
+                        
+                        {
+                            return (
+                                !props.hasFinalColors ?
+                                    (
+                                    <button
+                                        className={`answer-btn ${isPressed[item[0]] ? "pressed" : ""}`}
+                                        onClick={checkButton}
+                                        key={index}
+                                        >{item[0]}
+                                    </button>
+                                    )
+                                :
+                                    isPressed[item[0]] ?
+                                        (
+                                        <button
+                                            className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--correct" : ""}`}
+                                            key={index}
+                                            >{item[0]}
+                                        </button>
+                                        )
+                                    :
+                                        (
+                                        <button
+                                            className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--clicked-incorrect" : ""}`}
+                                            key={index}
+                                            >{item[0]}
+                                        </button>
+                                        )
+                                    )}
                     )}
                 </div>
                 <div className="line"></div>

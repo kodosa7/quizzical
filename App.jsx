@@ -8,9 +8,9 @@ export default function App() {
     const [questions, setQuestions] = useState([])
     const [isAllAnswersRight, setIsAllAnswersRight] = useState(0)
     const [hasCheckBtnClicked, setHasCheckBtnClicked] = useState(false)
-    const [isBegin, setIsBegin] = useState(true)
     const [isQuizStarted, setIsQuizStarted] = useState(false)
     const [hasRendered, setHasRendered] = useState(false)
+    const [hasFinalColors, setHasFinalColors] = useState(false)
     const [clickedAll, setClickedAll] = useState([
         {
             "1": false,
@@ -27,15 +27,12 @@ export default function App() {
             .then(res => res.json())
             .then(data => {
                 setQuestions(data.results)
-                setIsBegin(true)
                 setHasCheckBtnClicked(false)
                 setHasRendered(false)
+                setHasFinalColors(false)
             })
         }, [])
     
-    // console.log("hasCheckBtnClicked", hasCheckBtnClicked)
-    // console.log("isBegin", isBegin)
-
     // when the Check button is pressed, call this function
     function checkAllAnswers() {
         console.log("here", hasCheckBtnClicked)
@@ -47,12 +44,12 @@ export default function App() {
         console.log("How many answers clicked are right: ", isAllAnswersRight)
         if (isAllAnswersRight === 5) {
             console.log("All 5 answers are correct! :-)")
-            setIsBegin(false)
-            return [true, isAllAnswersRight]
+            setHasFinalColors(true)
+            return [true, isAllAnswersRight, hasFinalColors]
         } else {
             console.log(`Not all answers correct. Only ${isAllAnswersRight} correct out of 5`)
-            setIsBegin(false)
-            return [false, isAllAnswersRight]
+            setHasFinalColors(true)
+            return [false, isAllAnswersRight, hasFinalColors]
         }
     }
 
@@ -66,9 +63,9 @@ export default function App() {
             .then(res => res.json())
             .then(data => {
                 setQuestions(data.results)
-                setIsBegin(true)
                 setHasCheckBtnClicked(false)
                 setIsAllAnswersRight(0)
+                setHasFinalColors(false)
                 setClickedAll([
                   {
                     "1": false,
@@ -102,6 +99,8 @@ export default function App() {
                                 setIsAllAnswersRight={setIsAllAnswersRight}
                                 hasRendered={hasRendered}
                                 setHasRendered={setHasRendered}
+                                hasFinalColors={hasFinalColors}
+                                setHasFinalColors={setHasFinalColors}
                             />
                         </div>  
                     ))
@@ -120,7 +119,9 @@ export default function App() {
                                     </button>
                                 </>
                                 )
+                                
                                 :
+                                
                                 (
                                 <>
                                     <h5>You scored {isAllAnswersRight}/5 correct answers</h5>
