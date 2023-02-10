@@ -32,7 +32,8 @@ export default function App() {
                 setHasFinalColors(false)
             })
         }, [])
-    
+
+
     // when the Check button is pressed, call this function
     function checkAllAnswers() {
         console.log("here", hasCheckBtnClicked)

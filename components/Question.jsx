@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 
 export default function Question(props) {
     const [isPressed, setIsPressed] = useState({})
-    
+
     useEffect(() => {
         setIsPressed({
             [props.correct]: false
@@ -30,7 +30,8 @@ export default function Question(props) {
         setIsPressed({
             [answer]: true
         })
-        console.log(props.id)
+        
+        console.log("props.id", props.id)
 
         props.setClickedAll(prevClickedAll => {
             const updatedClickedAll = { ...prevClickedAll[0] }
@@ -42,19 +43,32 @@ export default function Question(props) {
         console.log("clicked answer:", answer)
         console.log("correct answer:", props.correct)
         
-        if (props.correct === answer) {
-            console.log("*** CORRECT ANSWER!")
+        var unencodedClickedAnswer = unEscape(new TextDecoder("utf-8").decode(new Uint8Array(props.correct.split("").map(c => c.charCodeAt(0)))))
+        
+        function unEscape(htmlStr) {
+            // htmlStr = htmlStr.replace(/&lt;/g , "<");	 
+            // htmlStr = htmlStr.replace(/&gt;/g , ">");     
+            htmlStr = htmlStr.replace(/&quot;/g , "\"");  
+            // htmlStr = htmlStr.replace(/&#39;/g , "\'");   
+            // htmlStr = htmlStr.replace(/&amp;/g , "&");
+            return htmlStr;
+        }
+
+        console.log("correct unencoded", unencodedClickedAnswer)
+
+        if (unencodedClickedAnswer === answer) {
+            console.log("\n*** CORRECT ANSWER!")
             props.setIsAllAnswersRight(prevState => prevState + 1)
         } else {
-            console.log("*** INCORRECT ANSWER :-(")
+            console.log("\n*** INCORRECT ANSWER :-(")
         }
     }
 
-    return (
+      return (
         <div className="questions-container">
             <div className="questions">
                 <h3 dangerouslySetInnerHTML={{ __html: props.question }}></h3>
-                <div>
+                <div className="button-row">
                     {Object.entries(shuffledAnswersObject()).map((item, index) =>
                         
                         {
@@ -65,7 +79,7 @@ export default function Question(props) {
                                         className={`answer-btn ${isPressed[item[0]] ? "pressed" : ""}`}
                                         onClick={checkButton}
                                         key={index}
-                                        >{item[0]}
+                                        ><div dangerouslySetInnerHTML={{ __html: item[0] }} />
                                     </button>
                                     )
                                 :
@@ -74,7 +88,7 @@ export default function Question(props) {
                                         <button
                                             className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--correct" : ""}`}
                                             key={index}
-                                            >{item[0]}
+                                            ><div dangerouslySetInnerHTML={{ __html: item[0] }} />
                                         </button>
                                         )
                                     :
@@ -82,7 +96,7 @@ export default function Question(props) {
                                         <button
                                             className={`answer-btn ${Object.entries(shuffledAnswersObject())[index][1] ? "result--clicked-incorrect" : ""}`}
                                             key={index}
-                                            >{item[0]}
+                                            ><div dangerouslySetInnerHTML={{ __html: item[0] }} />
                                         </button>
                                         )
                                     )}
