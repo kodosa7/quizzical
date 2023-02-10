@@ -9,21 +9,30 @@ export default function Question(props) {
         })
     }, [])
 
+    
     // make an object with answers and shuffle its order randomly
     function shuffledAnswersObject() {
         const allAnswersObject = {}
         allAnswersObject[props.correct] = true
         props.incorrect.map(item => 
             allAnswersObject[item] = false
-        )
-        const obj = allAnswersObject
-        const sortedObj = Object.fromEntries(
-            Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0]))
-          )
-        return sortedObj
+            )
+            const obj = allAnswersObject
+            const sortedObj = Object.fromEntries(Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])))
+            return sortedObj
+        }
+
+    // unescape wrong characters in texts from the API
+    function unEscape(htmlStr) {
+        htmlStr = htmlStr.replace(/&lt;/g , "<")
+        htmlStr = htmlStr.replace(/&gt;/g , ">")     
+        htmlStr = htmlStr.replace(/&quot;/g , "\"")  
+        htmlStr = htmlStr.replace(/&#39;/g , "\'")   
+        htmlStr = htmlStr.replace(/&amp;/g , "&")
+        return new TextDecoder("utf-8").decode(new Uint8Array(htmlStr.split("").map(c => c.charCodeAt(0))))
     }
 
-    // checks every single answer button
+    // check every single answer button
     function checkButton(e) {
         let answer = e.target.innerHTML
 
@@ -41,22 +50,10 @@ export default function Question(props) {
         })
 
         console.log("clicked answer:", answer)
-        console.log("correct answer:", props.correct)
-        
-        var unencodedClickedAnswer = unEscape(new TextDecoder("utf-8").decode(new Uint8Array(props.correct.split("").map(c => c.charCodeAt(0)))))
-        
-        function unEscape(htmlStr) {
-            // htmlStr = htmlStr.replace(/&lt;/g , "<");	 
-            // htmlStr = htmlStr.replace(/&gt;/g , ">");     
-            htmlStr = htmlStr.replace(/&quot;/g , "\"");  
-            // htmlStr = htmlStr.replace(/&#39;/g , "\'");   
-            // htmlStr = htmlStr.replace(/&amp;/g , "&");
-            return htmlStr;
-        }
+        console.log("correct unescaped", unEscape(props.correct))
 
-        console.log("correct unencoded", unencodedClickedAnswer)
 
-        if (unencodedClickedAnswer === answer) {
+        if (unEscape(props.correct) === answer) {
             console.log("\n*** CORRECT ANSWER!")
             props.setIsAllAnswersRight(prevState => prevState + 1)
         } else {
@@ -68,6 +65,7 @@ export default function Question(props) {
         <div className="questions-container">
             <div className="questions">
                 <h3 dangerouslySetInnerHTML={{ __html: props.question }}></h3>
+
                 <div className="button-row">
                     {Object.entries(shuffledAnswersObject()).map((item, index) =>
                         
